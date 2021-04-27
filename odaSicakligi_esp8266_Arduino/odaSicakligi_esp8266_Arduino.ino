@@ -1,3 +1,5 @@
+/* Ercan Kirbiyik-esp8266-deneme*/
+
 #define ag_ismi "NetMASTER Uydunet-B317" //wifi bağlantımız
 #define ag_sifresi "ec81bffa0c665d49"    //wifi bağlantı şifremiz
 #define IP "184.106.153.149" //thingspeak.com IP adresi
@@ -26,7 +28,7 @@ void loop() {
   Serial.println(sicaklik);
   sicaklik_yolla(sicaklik);
   
-  delay(30000); // dakikada 1 güncellenmesi için 1 dakika bekle
+  delay(60000); // dakikada 1 güncellenmesi için 1 dakika bekletiyoruz
 }
 
 void sicaklik_yolla(float sicaklik) {
@@ -39,18 +41,17 @@ void sicaklik_yolla(float sicaklik) {
     return;
   }
 
-  String yollanacakkomut = "GET /update?key=7TIP22Z9PXA9YPSK&field1="; // Burada 64T0OS3R1OEAYUML yazan kısım bizim API Key den aldığımız Key. Siz buraya kendi keyinizi yazacaksınız.
+  String yollanacakkomut = "GET /update?key=7TIP22Z9PXA9YPSK&field1="; // Burada 7TIP22Z9PXA9YPSK yazan kısım bizim API Key'den aldığımız Write Api Key. Siz buraya kendi 'key'inizi yazacaksınız.
   yollanacakkomut += (int(sicaklik)); // Burada ise sıcaklığımızı float değişkenine atayarak yollanacakkomut değişkenine ekliyoruz.
-  yollanacakkomut += "\r\n\r\n"; // ESP modülümüz ile seri iletişim kurarken yazdığımız komutların modüle iletilebilmesi için Enter komutu yani // /r/n komutu kullanmamız gerekiyor.
+  yollanacakkomut += "\r\n\r\n"; // ESP modülümüz ile seri iletişim kurarken yazdığımız komutların modüle iletilebilmesi için Enter komutu yani /r/n komutu kullanmamız gerekiyor.
 
   delay(3000); 
-  Serial.print("AT+CIPSEND="); //veri yollayacağımız zaman bu komutu kullanıyoruz. Bu komut ile önce kaç tane karakter yollayacağımızı söylememiz gerekiyor.
+  Serial.print("AT+CIPSEND="); //veri yollayacağımız zaman bu komutu kullanıyoruz. bu komut ile önce kaç tane karakter yollayacağımızı söylememiz gerekiyor.
   Serial.println(yollanacakkomut.length() + 2); //yollanacakkomut değişkeninin kaç karakterden oluştuğunu .length() ile bulup yazırıyoruz.
 
   delay(1000);
 
-  if (Serial.find(">")) { //eğer sunucu ile iletişim sağlayıp komut uzunluğunu gönderebilmişsek ESP modülü bize ">" işareti ile geri dönüyor.
-    // arduino da ">" işaretini gördüğü anda sıcaklık verisini esp modülü ile thingspeak sunucusuna yolluyor.
+  if (Serial.find(">")) { //eğer sunucu ile iletişim sağlayıp komut uzunluğunu gönderebilmişsek ESP modülü bize ">" işareti ile geri dönüyor. arduino da ">" işaretini gördüğü anda sıcaklık verisini esp modülü ile thingspeak sunucusuna yolluyor.
     
     Serial.print(yollanacakkomut);
     Serial.print("\r\n\r\n");
